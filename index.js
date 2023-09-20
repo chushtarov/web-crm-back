@@ -42,6 +42,3 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-// app.listen(process.env.PORT, () =>
-//   console.log(`http://localhost:${process.env.PORT}`)
-// );
