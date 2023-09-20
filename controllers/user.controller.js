@@ -20,7 +20,7 @@ module.exports.userController = {
   },
 
   registerUser: async (req, res) => {
-    const { login, password, result } = req.body;
+    const { login, password, result, isStudent, isMentor, isAdmin } = req.body;
 
     if (login.length < 4 || password.length < 4) {
       return res
@@ -29,7 +29,7 @@ module.exports.userController = {
     }
 
     const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS));
-    const user = await User.create({ login, password: hash });
+    const user = await User.create({ login, password: hash, isStudent, isMentor, isAdmin });
     res.json(user);
   },
   findOneUser: async (req, res) => {
@@ -58,5 +58,47 @@ module.exports.userController = {
       expiresIn: "240h",
     });
     return res.json({ token });
+  },
+
+  createAdminAccount: async (req, res) => {
+    try {
+      const { login, password } = req.body;
+
+      // Проверка, что текущий пользователь является администратором.
+      if (!req.user.isAdmin) {
+
+        return res
+          .status(403)
+          .json({
+            error: "У вас нет прав для создания администраторского аккаунта",
+          });
+      }
+
+      // Проверка наличия аккаунта с логином "admin".
+      const adminExists = await User.exists({ login: "admin" });
+      if (adminExists) {
+        return res
+          .status(400)
+          .json({ error: "Администраторский аккаунт уже существует" });
+      }
+
+      // Создание администраторского аккаунта.
+      const hash = await bcrypt.hash(
+        password,
+        Number(process.env.BCRYPT_ROUNDS)
+      );
+      const adminUser = await User.create({
+        login: "admin",
+        password: hash,
+        isAdmin: true,
+      });
+
+      res.status(201).json(adminUser);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Не удалось создать администраторский аккаунт" });
+    }
   },
 };
