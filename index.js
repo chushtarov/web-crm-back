@@ -1,6 +1,6 @@
 require('events').EventEmitter.defaultMaxListeners = 15; 
-
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -9,11 +9,14 @@ const socketIo = require("socket.io");
 const messageRoute = require("./routes/message.route");
 const chatRoute = require("./routes/chat.route");
 
-const app = express();
+const app = express()
 
-app.use(express.json());
-app.use(cors());
+app.use('/img', express.static(__dirname + '/img'));
+app.use(express.json())
+app.use(cors())
 
+app.use(require('./routes/user.route'));
+app.use(require('./routes/card.route'))
 app.use(require("./routes/user.route"));
 app.use("/api", messageRoute);
 app.use("/api", chatRoute);
