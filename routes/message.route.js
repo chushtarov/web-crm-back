@@ -9,11 +9,16 @@ router.post(
   messageController.createMessage
 );
 
-router.delete(
-    "/chats/:chatId/messages/:messageId",
-    authMiddleware,
-    messageController.deleteMessage
-  );
+router.get(
+  "/chats/:chatId/messages",
+  authMiddleware,
+  messageController.getMessage
+);
 
+router.delete(
+  "/chats/:chatId/messages/:messageId",
+  authMiddleware,
+  messageController.deleteMessage
+);
 
 module.exports = router;

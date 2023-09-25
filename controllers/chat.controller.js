@@ -75,9 +75,7 @@ module.exports.chatController = {
         return res.status(404).json({ error: "User not found" });
       }
 
-      chat.participants = chat.participants.filter(
-        (participant) => participant.toString() !== userId
-      );
+      chat.participants.pull(userId);
 
       await chat.save();
       res.status(200).json(chat);
