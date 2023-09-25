@@ -1,4 +1,7 @@
+
+
 require('events').EventEmitter.defaultMaxListeners = 15; 
+
 require("dotenv").config();
 
 const express = require("express");
@@ -9,7 +12,19 @@ const socketIo = require("socket.io");
 const messageRoute = require("./routes/message.route");
 const chatRoute = require("./routes/chat.route");
 
-const app = express()
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:5173", // Замените на адрес вашего клиента
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+
+
 
 app.use('/img', express.static(__dirname + '/img'));
 app.use(express.json())
@@ -21,27 +36,29 @@ app.use(require("./routes/user.route"));
 app.use("/api", messageRoute);
 app.use("/api", chatRoute);
 
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  socket.on("newMessage", (message) => {
+    io.emit("chatMessage", message);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+
+
 mongoose
   .connect(process.env.MONGO_SERVER, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
-    const server = http.createServer(app);
-    const io = socketIo(server);
-
-    io.on("connection", (socket) => {
-      console.log("User connected");
-
-      socket.on("disconnect", () => {
-        console.log("User disconnected");
-      });
-    });
-
-    const PORT = process.env.PORT || 4000;
+    const PORT = process.env.PORT || 3000;
     server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((error) => console.log(error));
-

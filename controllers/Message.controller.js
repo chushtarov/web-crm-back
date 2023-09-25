@@ -7,7 +7,7 @@ module.exports.messageController = {
       const sender = req.user.id;
       const chat = req.params.chatId;
 
-      const message = await Message.create({ text, sender, chat });
+      const message = await Message.create({ text, chat, sender });
       res.status(201).json(message);
     } catch (error) {
       console.error(error);
@@ -35,6 +35,19 @@ module.exports.messageController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Не удалось удалить сообщение" });
+    }
+  },
+  getMessage: async (req, res) => {
+    try {
+      const chatId = req.params.chatId;
+
+      // Ищем все сообщения в указанном чате
+      const messages = await Message.find({ chat: chatId });
+
+      res.status(200).json(messages);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Не удалось получить сообщения" });
     }
   },
 };

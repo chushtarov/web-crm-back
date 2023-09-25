@@ -10,6 +10,5 @@ router.post("/api/login", userController.login);
 router.patch("/userResult", authMiddleware, userController.patchResult);
 router.get("/oneUser", authMiddleware, userController.findOneUser);
 
-router.post("/admin/create", authMiddleware, userController.createAdminAccount);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const chatSchema = new mongoose.Schema({
   participants: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Ссылка на модель пользователя
+      ref: 'User', 
     },
   ],
 });
