@@ -20,7 +20,7 @@ module.exports.userController = {
   },
 
   registerUser: async (req, res) => {
-    const { login, password, result, isStudent, isMentor, isAdmin } = req.body;
+    const { login, password, result, isStudent, isMentor, isAdmin, group } = req.body;
 
     if (login.length < 4 || password.length < 4) {
       return res
@@ -29,13 +29,9 @@ module.exports.userController = {
     }
 
     const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS));
-    const user = await User.create({
-      login,
-      password: hash,
-      isStudent,
-      isMentor,
-      isAdmin,
-    });
+
+    const user = await User.create({ login, password: hash, isStudent, isMentor, isAdmin, group });
+
     res.json(user);
   },
   findOneUser: async (req, res) => {
