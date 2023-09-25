@@ -31,6 +31,10 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  group: {
+    type: String,
+    default: "bootcamp #17"
+  }
 });
 
 const User = mongoose.model("User", userSchema);
