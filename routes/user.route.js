@@ -9,6 +9,7 @@ router.post("/api/users", userController.registerUser);
 router.post("/api/login", userController.login);
 router.patch("/userResult", authMiddleware, userController.patchResult);
 router.get("/oneUser", authMiddleware, userController.findOneUser);
+router.delete("/api/user/:id", authMiddleware, userController.deleteUser)
 
 
 module.exports = router;

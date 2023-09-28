@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
   },
   isStudent: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   result: {
     type: Number,

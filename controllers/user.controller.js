@@ -31,8 +31,8 @@ module.exports.userController = {
     const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS));
 
     const user = await User.create({ login, password: hash, isStudent, isMentor, isAdmin, group });
-
-    res.json(user);
+    const users = await User.find()
+    res.json(users);
   },
   findOneUser: async (req, res) => {
     const data = await User.findById(req.user.id);
@@ -61,4 +61,13 @@ module.exports.userController = {
     });
     return res.json({ token });
   },
+
+  deleteUser: async (req, res) => {
+    try {
+      const user = await User.findByIdAndRemove(req.params.id);
+      res.json(user);
+    } catch (error) {
+      res.json(error.message);
+    }
+  }
 };
