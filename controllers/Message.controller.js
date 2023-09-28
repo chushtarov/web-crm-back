@@ -3,11 +3,10 @@ const Message = require("../models/Message.model");
 module.exports.messageController = {
   createMessage: async (req, res) => {
     try {
-      const { text } = req.body;
-      const sender = req.user.id;
+      const { text, sender } = req.body;
       const chat = req.params.chatId;
-
       const message = await Message.create({ text, chat, sender });
+      
       res.status(201).json(message);
     } catch (error) {
       console.error(error);
@@ -30,6 +29,7 @@ module.exports.messageController = {
       }
 
       await Message.deleteOne({ _id: messageId });
+
 
       return res.json("Сообщение удалено");
     } catch (error) {
